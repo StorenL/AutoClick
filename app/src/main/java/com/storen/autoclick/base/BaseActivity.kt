@@ -7,9 +7,9 @@ import androidx.viewbinding.ViewBinding
 import java.lang.Exception
 import java.lang.reflect.ParameterizedType
 
-abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
+abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
-    private lateinit var binding: T
+    private lateinit var binding: VB
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,11 +22,12 @@ abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
         binding.afterCreate()
     }
 
-    private fun inflateViewBinding(): T = try {
-        (findGenericType().actualTypeArguments[0] as Class<*>).getMethod(
+    @Suppress("UNCHECKED_CAST")
+    private fun inflateViewBinding(): VB = try {
+        (findGenericType().actualTypeArguments[0] as Class<VB>).getMethod(
             "inflate",
             LayoutInflater::class.java
-        ).invoke(null, layoutInflater) as T
+        ).invoke(null, layoutInflater) as VB
     } catch (ignore: Exception) {
         throw IllegalArgumentException("Please check if the parent class specifies the ViewBinding generic type.")
     }
@@ -34,16 +35,15 @@ abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
     private fun findGenericType(): ParameterizedType {
         var clazz: Class<*> = javaClass
         while (clazz.genericSuperclass !is ParameterizedType) {
-            clazz = clazz.superclass
-            clazz?.run { throw IllegalArgumentException("Must have a generic parent class.") }
+            clazz = clazz.superclass ?: throw IllegalArgumentException("Must have a generic parent class.")
         }
         return clazz.genericSuperclass as ParameterizedType
     }
 
-    abstract fun T.initView()
-    abstract fun T.initClick()
-    abstract fun T.observeData()
-    open fun T.beforeSetContent() {}
-    open fun T.afterCreate() {}
+    abstract fun VB.initView()
+    abstract fun VB.initClick()
+    abstract fun VB.observeData()
+    open fun VB.beforeSetContent() {}
+    open fun VB.afterCreate() {}
 
 }
