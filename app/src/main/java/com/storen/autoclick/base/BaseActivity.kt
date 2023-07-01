@@ -16,6 +16,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         binding = inflateViewBinding()
         binding.beforeSetContent()
         setContentView(binding.root)
+        binding.beforeInit()
         binding.initView()
         binding.initClick()
         binding.observeData()
@@ -45,5 +46,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     abstract fun VB.observeData()
     open fun VB.beforeSetContent() {}
     open fun VB.afterCreate() {}
+    open fun VB.beforeInit() {}
 
 }

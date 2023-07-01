@@ -1,13 +1,22 @@
 package com.storen.autoclick.util
 
+import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.content.Intent
 import android.graphics.Outline
+import android.graphics.PixelFormat
+import android.os.Build
 import android.provider.Settings
+import android.text.TextUtils
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.view.WindowManager
+import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
+import java.lang.Exception
 
 val Any.TAG: String
     get() {
@@ -33,4 +42,27 @@ fun View.clip2Round(radius: Float) {
     clipToOutline = true
 }
 
-fun Context.openAccessibilitySetting() = startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+fun Context.openAccessibilitySettings() =
+    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
+
+fun Context.openSystemSettings() = startActivity(Intent(Settings.ACTION_SETTINGS).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
+
+val overLayoutSettingsIntent: Intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
+fun Context.openOverlaySettings() = startActivity(overLayoutSettingsIntent)
+
+fun Context.tryOpenSettings(block: () -> Unit) = try {
+    block()
+} catch (ignore: Exception) {
+    openSystemSettings()
+}
+
+fun Context.canDrawOverlays() = Settings.canDrawOverlays(this)
+
+fun Context.isAccessibilityOpen(accessibilityManager: AccessibilityManager): Boolean {
+    return accessibilityManager
+        .getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC)
+        .firstOrNull {
+            TextUtils.equals(it.resolveInfo.serviceInfo.packageName, packageName)
+        } != null
+}
+
