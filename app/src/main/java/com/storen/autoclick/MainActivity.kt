@@ -8,7 +8,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.storen.autoclick.base.BaseActivity
 import com.storen.autoclick.databinding.ActivityMainBinding
+import com.storen.autoclick.util.toast
 import dagger.hilt.android.AndroidEntryPoint
+import org.opencv.android.OpenCVLoader
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -21,6 +23,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             viewModel.checkAccessibilityAndOverlayStatus(this@MainActivity)
         }
+        OpenCVLoader.initDebug().toast(this@MainActivity)
     }
 
     override fun ActivityMainBinding.initView() {

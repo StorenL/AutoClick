@@ -24,7 +24,7 @@ class ClickPointView @JvmOverloads constructor(
     private var windowManager: WindowManager? = null
 
     companion object {
-        fun buildSelf(context: Context, layoutInflater: LayoutInflater) = LayoutClickableBinding.inflate(layoutInflater).root
+        fun buildSelf(layoutInflater: LayoutInflater) = LayoutClickableBinding.inflate(layoutInflater).root
     }
 
     init {

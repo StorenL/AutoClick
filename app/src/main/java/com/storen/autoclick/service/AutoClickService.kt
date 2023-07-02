@@ -30,7 +30,7 @@ class AutoClickService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         "onServiceConnected".log()
-        ClickPointView.buildSelf(this, layoutInflater).attachToWindow(windowManager)
+        ClickPointView.buildSelf(layoutInflater).attachToWindow(windowManager)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
