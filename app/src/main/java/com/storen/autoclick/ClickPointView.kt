@@ -84,7 +84,7 @@ class ClickPointView @JvmOverloads constructor(
 
             else -> crossfade = 0f
         }
-        return super.onTouchEvent(event)
+        return true
     }
 
 }

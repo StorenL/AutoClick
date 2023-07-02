@@ -9,21 +9,39 @@
     android:paddingHorizontal="30dp"
     tools:context=".MainActivity">
 
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <Button
-        android:id="@+id/btnOpenPermission1"
+        android:id="@+id/btnAction1"
         android:text="开启无障碍模式"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btnOpenPermission2"
+        android:id="@+id/btnAction2"
         android:text="授予悬浮窗权限"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btnAddClickView"
-        android:text="添加点击View"
+        android:id="@+id/btnAction3"
+        android:text="申请录制屏幕权限"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btnAction4"
+        android:text="初始化OpenCV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btnAction5"
+        android:text="开始录制"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

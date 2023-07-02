@@ -7,7 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
+import androidx.core.app.NotificationCompat
 import com.storen.autoclick.ClickPointView
+import com.storen.autoclick.constant.NotificationConst
+import com.storen.autoclick.constant.NotificationConst.FOREGROUND_NOTIFICATION_ID
+import com.storen.autoclick.constant.NotificationConst.NOTIFICATION_CHANNEL_ID
 import com.storen.autoclick.util.log
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +57,7 @@ class AutoClickService : AccessibilityService() {
     override fun onCreate() {
         super.onCreate()
         coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        startForeground(FOREGROUND_NOTIFICATION_ID, NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).build())
     }
 
     override fun onDestroy() {

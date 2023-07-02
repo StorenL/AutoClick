@@ -21,9 +21,13 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _isOverlayEnable = MutableLiveData<Boolean>()
     val isOverlayEnable get() = _isOverlayEnable
 
-    fun checkAccessibilityAndOverlayStatus(context: Context) {
+    private val _isMediaProjectionEnable = MutableLiveData<Boolean>()
+    val isMediaProjectionEnable get() = _isMediaProjectionEnable
+
+    fun checkPermissionStatus(context: Context, isMediaProjectionEnable: Boolean) {
         _isAccessibilityEnable.postValue(context.isAccessibilityOpen(accessibilityManager))
         _isOverlayEnable.postValue(context.canDrawOverlays())
+        _isMediaProjectionEnable.postValue(isMediaProjectionEnable)
     }
 
 }
