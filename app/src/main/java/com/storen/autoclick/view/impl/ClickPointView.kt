@@ -44,7 +44,7 @@ class ClickPointView @JvmOverloads constructor(
             height = WindowManager.LayoutParams.WRAP_CONTENT
             gravity = Gravity.START or Gravity.TOP
             format = PixelFormat.TRANSLUCENT
-            flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE /*or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE*/
             type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 // 在部分界面无法显示
                 /*LayoutParams.TYPE_APPLICATION_OVERLAY*/

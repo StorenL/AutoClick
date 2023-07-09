@@ -28,9 +28,14 @@ class AutoClickService : AccessibilityService() {
     companion object Command {
         private const val COMMAND_TYPE = "command_type"
         private const val COMMAND_TYPE_BALL = 1
+        private const val COMMAND_TYPE_POINT = 2
 
         fun overlayBall(ctx: Context) = Intent(ctx, AutoClickService::class.java).apply {
             putExtra(COMMAND_TYPE, COMMAND_TYPE_BALL)
+        }
+
+        fun pointView(ctx: Context) = Intent(ctx, AutoClickService::class.java).apply {
+            putExtra(COMMAND_TYPE, COMMAND_TYPE_POINT)
         }
     }
 
@@ -44,8 +49,9 @@ class AutoClickService : AccessibilityService() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val overlayBall = intent.getIntExtra(COMMAND_TYPE, 0)
-        if (overlayBall == COMMAND_TYPE_BALL) {
-            addClickableView()
+        when(overlayBall) {
+            COMMAND_TYPE_BALL -> addOverlayBall()
+            COMMAND_TYPE_POINT -> addClickableView()
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -56,6 +62,14 @@ class AutoClickService : AccessibilityService() {
             addedViewList.add(it)
         }
     }
+
+    private fun addOverlayBall() {
+        WindowViewFactory.getWindowView(WindowViewFactory.ViewType.BALL, layoutInflater).let {
+            it.attachToWindow(windowManager)
+            addedViewList.add(it)
+        }
+    }
+
     /**
      * 当前Service成功绑定系统无障碍服务时的回调
      */

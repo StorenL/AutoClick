@@ -47,7 +47,13 @@
 
     <Button
         android:id="@+id/btnAction6"
-        android:text="开始悬浮窗"
+        android:text="添加点击点"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btnAction7"
+        android:text="启动悬浮窗"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -97,8 +97,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
         }
 
-        // 启动悬浮球
+        // 添加点击View
         btnAction6.setOnClickListener {
+            startService(AutoClickService.overlayBall(this@MainActivity))
+        }
+
+        btnAction7.setOnClickListener {
             startService(AutoClickService.overlayBall(this@MainActivity))
         }
     }
