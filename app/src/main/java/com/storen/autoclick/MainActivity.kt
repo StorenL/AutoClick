@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.storen.autoclick.base.BaseActivity
 import com.storen.autoclick.databinding.ActivityMainBinding
+import com.storen.autoclick.service.AutoClickService
 import com.storen.autoclick.util.DensityExt.getCurrentWindowSize
 import com.storen.autoclick.util.toast
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,19 +44,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
     }
 
-    override fun ActivityMainBinding.initView() {
-
-    }
+    override fun ActivityMainBinding.initView() { }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun ActivityMainBinding.initClick() {
+        // 打开无障碍设置
         btnAction1.setOnClickListener {
             activityResultLauncher.launch(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
 
+        // 打开悬浮窗权限设置
         btnAction2.setOnClickListener {
             activityResultLauncher.launch(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
         }
+
+        // 申请录屏权限，前提是已经启动了一个前台服务，其type是屏幕录制
         btnAction3.setOnClickListener {
             if (viewModel.isAccessibilityEnable.value != true) {
                 "Must open accessibility first.".toast(this@MainActivity)
@@ -64,9 +67,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
             activityResultLauncher.launch(mediaProjectionManager.createScreenCaptureIntent())
         }
+
+        // 初始化OpenCV
         btnAction4.setOnClickListener {
             btnAction4.isEnabled = !OpenCVLoader.initDebug()
         }
+
+        // 创建虚拟显示、录屏、显示在Surface
         btnAction5.setOnClickListener {
             if (viewModel.isAccessibilityEnable.value != true || viewModel.isMediaProjectionEnable.value != true) {
                 "Some config isn't enable.".toast(this@MainActivity)
@@ -89,6 +96,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 virtualDisplay = null
             }
         }
+
+        // 启动悬浮球
+        btnAction6.setOnClickListener {
+            startService(AutoClickService.overlayBall(this@MainActivity))
+        }
     }
 
     override fun ActivityMainBinding.observeData() {
@@ -100,6 +112,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
         viewModel.isMediaProjectionEnable.observe(this@MainActivity) {
             btnAction3.isEnabled = !it
+        }
+        viewModel.canAddViewLiveData.observe(this@MainActivity) {
+            btnAction6.isEnabled = it
         }
     }
 

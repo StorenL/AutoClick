@@ -1,4 +1,4 @@
-package com.storen.autoclick
+package com.storen.autoclick.view.impl
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,37 +11,32 @@ import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import com.storen.autoclick.databinding.LayoutClickableBinding
+import com.storen.autoclick.util.DensityExt.getCurrentWindowSize
+import com.storen.autoclick.view.DragDelegate
+import com.storen.autoclick.view.IWindowView
 
 class ClickPointView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
-) : ImageFilterView(context, attrs) {
-
-    private var downEventX: Float = 0f
-    private var downEventY: Float = 0f
-    private var downViewX: Int = 0
-    private var downViewY: Int = 0
+) : ImageFilterView(context, attrs), IWindowView {
 
     private var windowManager: WindowManager? = null
 
-    companion object {
-        fun buildSelf(layoutInflater: LayoutInflater) = LayoutClickableBinding.inflate(layoutInflater).root
-    }
+    private val touchDelegate by lazy { DragDelegate(this) }
 
-    init {
-        setOnLongClickListener {
-            detachFromWindow()
-            true
-        }
-    }
-
-    fun attachToWindow(wm: WindowManager) {
+    override fun attachToWindow(wm: WindowManager) {
         this.windowManager = wm
-        windowManager?.addView(this, buildLayoutParams())
+        windowManager?.addView(this, buildLayoutParams().apply {
+            val currentWindowSize = wm.getCurrentWindowSize(resources)
+            x = currentWindowSize.first / 3
+            y = currentWindowSize.second / 3
+        })
     }
 
-    fun detachFromWindow() {
+    override fun detachFromWindow() {
         windowManager?.removeView(this)
     }
+
+    override fun getWindowManager(): WindowManager? = windowManager
 
     private fun buildLayoutParams(): WindowManager.LayoutParams {
         return WindowManager.LayoutParams().apply {
@@ -63,28 +58,13 @@ class ClickPointView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        windowManager ?: return super.onTouchEvent(event)
-        val params = layoutParams
-        if (windowManager == null || params !is WindowManager.LayoutParams) return super.onTouchEvent(event)
+        touchDelegate.onTouchEvent(event)
         when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                crossfade = 1f
-                // 记录点击的位置不会丢失精度
-                downEventX = event.rawX
-                downEventY = event.rawY
-                downViewX = params.x
-                downViewY = params.y
-            }
-
-            MotionEvent.ACTION_MOVE -> {
-                params.x = downViewX + (event.rawX - downEventX).toInt()
-                params.y = downViewY + (event.rawY - downEventY).toInt()
-                windowManager?.updateViewLayout(this, params)
-            }
-
+            MotionEvent.ACTION_DOWN -> crossfade = 1f
+            MotionEvent.ACTION_MOVE -> {}
             else -> crossfade = 0f
         }
-        return true
+        return false
     }
 
 }
